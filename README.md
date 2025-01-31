@@ -1,0 +1,1 @@
+# azure-entraid-scopes
