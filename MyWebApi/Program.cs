@@ -14,7 +14,13 @@ builder.Services.AddAuthentication(options =>
     options.Authority = "https://login.microsoftonline.com/<MY_TENANT>/";
     options.Audience = "api://<MY_API_CLIENT_ID>";
 });
-builder.Services.AddAuthorization();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Writer", policy => policy.RequireRole("WeatherForecast.Writer"));
+    options.AddPolicy("Reader", policy => policy.RequireRole("WeatherForecast.Reader"));
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -49,7 +55,7 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast")
-.RequireAuthorization()
+.RequireAuthorization("Reader")
 .WithOpenApi();
 
 app.Run();
